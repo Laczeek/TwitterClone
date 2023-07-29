@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+
 import Sidebar from '../components/sidebar/Sidebar';
 import AdsSidebar from '../components/adsSidebar/AdsSidebar';
 

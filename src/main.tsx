@@ -8,12 +8,15 @@ import store from './store/store.ts';
 import LoginPage from './pages/LoginPage.tsx';
 import RootLayout from './pages/RootLayout.tsx';
 import HomePage from './pages/HomePage.tsx';
+import { action as logoutAction } from './pages/Logout.ts';
+import { loader as protectLoader } from './firebase/authHelpers.ts';
 
 import './index.css';
 
 const router = createBrowserRouter([
-	{path:'/', element: <LoginPage/>},
-	{ path: '/home', element: <RootLayout />, children: [{ index: true, element: <HomePage /> }] },
+	{ path: '/', element: <LoginPage /> },
+	{ path: '/home', element: <RootLayout />, children: [{ index: true, element: <HomePage /> }], loader: protectLoader },
+	{ path: '/logout', action: logoutAction },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

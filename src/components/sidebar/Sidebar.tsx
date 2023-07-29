@@ -19,7 +19,6 @@ import {
 import SidebarLogo from './SidebarLogo';
 import SidebarLink from './SidebarLink';
 import TweetButton from '../ui/TweetButton';
-import avatar from '../../assets/avatarImg.png';
 import LogoutModal from './LogoutModal';
 
 const LINKS = [
@@ -33,6 +32,7 @@ const LINKS = [
 
 const Sidebar = (): JSX.Element => {
 	const [isShowingModal, toggleModalHandler] = useModal();
+	const userData = useSelector((state:RootStateType) => state.user.userToken)
 	const dispatch: AppDispatchType = useDispatch();
 	const isNavShowing = useSelector((state: RootStateType) => state.ui.isNavShowing);
 
@@ -72,10 +72,10 @@ const Sidebar = (): JSX.Element => {
 			</div>
 			<button className='linkHoverAnimation mb-1 rounded-full   xl:py-2 xl:px-4' onClick={openLogoutModal}>
 				<div className='dark:text-white text-black  xl:flex xl:items-center xl:gap-x-2'>
-					<img src={avatar} className='h-11 w-11' />
+					<img src={userData?.photoURL} className='h-11 w-11 rounded-full' />
 					<div className='hidden xl:block'>
-						<p className='font-bold'>Patryk Popiela</p>
-						<p className='text-sm opacity-40'>@patrykpopiela</p>
+						<p className='font-bold'>{userData?.name}</p>
+						<p className='text-sm opacity-40'>{userData?.email.replace('gmail.com', '')}</p>
 					</div>
 					<EllipsisHorizontalIcon className='hidden xl:block h-5 w-5 dark:text-white text-black' />
 				</div>
