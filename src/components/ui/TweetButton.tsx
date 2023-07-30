@@ -2,14 +2,14 @@ interface TweetButtonPropsTypes {
 	fontSize: '18px' | '16px';
 	width?: string;
 	disabled?: boolean;
+	isTypeSubmit?: boolean;
 }
 
 const TweetButton = (props: TweetButtonPropsTypes): JSX.Element => {
-
 	const scrollToTop = () => {
 		document.body.scrollTop = 0;
 		document.documentElement.scrollTop = 0;
-	}
+	};
 
 	let fSize;
 
@@ -21,10 +21,11 @@ const TweetButton = (props: TweetButtonPropsTypes): JSX.Element => {
 
 	return (
 		<button
-		onClick={scrollToTop}
+			onClick={props.isTypeSubmit ? undefined : scrollToTop}
 			className='btn'
 			style={{ width: props.width ? props.width : '', fontSize: fSize }}
-			disabled={props.disabled ? props.disabled : false}>
+			disabled={props.disabled ? props.disabled : false}
+			type={props.isTypeSubmit ? 'submit' : 'button'}>
 			Tweet
 		</button>
 	);

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { signInWithPopup } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 
-import { AppDispatchType, RootStateType } from '../store/store.ts';
+import { AppDispatchType } from '../store/store.ts';
 import { userActions } from '../store/user-slice.ts';
 import { auth, provider } from '../firebase/firebaseConfig.ts';
 import twitterLogo from '../assets/twitterLogoBig.png';
@@ -15,9 +15,6 @@ import { addTokenToLocalStorage } from '../firebase/authHelpers.ts';
 const LoginPage = () => {
 	const navigate = useNavigate();
 	const dispatch: AppDispatchType = useDispatch();
-	//test
-	const token = useSelector((state: RootStateType) => state.user.userToken);
-	console.log(token);
 
 	const loginHandler = (): void => {
 		signInWithPopup(auth, provider)
@@ -45,10 +42,10 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div className='w-full h-screen flex justify-center items-center'>
-			<div className=' p-6 text-center rounded-md max-w-[400px] dark:text-white text-black'>
-				<img src={twitterLogo} className='w-full' />
-				<h2 className='text-2xl font-bold my-4'>Join Twitted today.</h2>
+		<div className='w-full h-screen flex justify-center items-center dark:text-white text-black'>
+			<div className='  p-6 text-center rounded-md max-w-[300px]'>
+				<img src={twitterLogo} className='w-[150px] mx-auto' />
+				<h2 className='text-2xl font-bold my-4'>Join Twitter today.</h2>
 				<button
 					onClick={loginHandler}
 					className='relative rounded-xl overflow-hidden z-10  bg-black text-white py-2 px-4  border-blue
