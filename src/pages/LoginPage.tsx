@@ -24,7 +24,6 @@ const LoginPage = () => {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			.then((result: any) => {
 				const user: TokenType = {
-					accessToken: result.user.accessToken,
 					name: result.user.displayName,
 					email: result.user.email,
 					photoURL: result.user.photoURL,
@@ -47,7 +46,7 @@ const LoginPage = () => {
 
 	return (
 		<div className='w-full h-screen flex justify-center items-center'>
-			<div className='bg-white p-6 text-center rounded-md max-w-[400px]'>
+			<div className=' p-6 text-center rounded-md max-w-[400px] dark:text-white text-black'>
 				<img src={twitterLogo} className='w-full' />
 				<h2 className='text-2xl font-bold my-4'>Join Twitted today.</h2>
 				<button

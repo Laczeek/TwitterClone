@@ -11,7 +11,6 @@ export interface FollowType {
 }
 
 export interface TokenType {
-	accessToken: string;
 	name: string;
 	email: string;
 	photoURL: string;
