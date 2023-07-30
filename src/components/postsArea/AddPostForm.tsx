@@ -1,5 +1,7 @@
-import { useRef, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { push, ref, serverTimestamp } from 'firebase/database';
 
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import { FaceSmileIcon } from '@heroicons/react/24/outline';
@@ -8,12 +10,13 @@ import { CalendarIcon } from '@heroicons/react/24/outline';
 import PickerModal from './PickerModal';
 import TweetButton from '../ui/TweetButton';
 import { RootStateType } from '../../store/store';
+import { auth, database } from '../../firebase/firebaseConfig';
 
 const AddPostForm = (): JSX.Element => {
-	const userAvatar = useSelector((state: RootStateType) => state.user.userToken?.photoURL);
-
+	const userData = useSelector((state: RootStateType) => state.user.userToken);
 	const [message, setMessage] = useState<string>('');
 	const [isModal, setIsModal] = useState(false);
+	const navigate = useNavigate();
 	const photoRef = useRef<HTMLInputElement>(null);
 	const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -32,10 +35,38 @@ const AddPostForm = (): JSX.Element => {
 		setIsModal(false);
 	};
 
+	const handleButtonClick = (event: FormEvent) => {
+		event.preventDefault();
+		void addPostHandler();
+	};
+
+	const addPostHandler = async (): Promise<void> => {
+		if (auth.currentUser && message.trim().length !== 0) {
+			try {
+				await push(ref(database, 'posts/'), {
+					uid: userData?.userId,
+					email: userData?.email,
+					name: userData?.name,
+					photoURL: userData?.photoURL,
+					message,
+					whenAdded: serverTimestamp(),
+				});
+				setMessage('');
+			} catch (error) {
+				window.alert('Something went wrong, please try to refresh page...')
+			}
+		} else {
+			window.alert('Something has gone wrong, you will be redirected to the login page.');
+			setTimeout(() => {
+				navigate('/');
+			}, 1000);
+		}
+	};
+
 	return (
-		<form className='flex gap-x-6 p-3 border-b border-gray-border'>
+		<form className='flex gap-x-6 p-3 border-b border-gray-border' onSubmit={handleButtonClick}>
 			{isModal && <PickerModal onAddEmoji={onAddEmoji} hideModal={hideModalHandler} />}
-			<img src={userAvatar} className='h-12 w-12 rounded-full' />
+			<img src={userData?.photoURL} className='h-12 w-12 rounded-full' />
 
 			<div className=' grow mt-2'>
 				<textarea
@@ -58,7 +89,7 @@ const AddPostForm = (): JSX.Element => {
 							<CalendarIcon className='h-6 w-6 text-blue mx-2 hover:opacity-80 transition-opacity duration-200 pointer-events-none' />
 						</button>
 					</div>
-					<TweetButton fontSize='16px' disabled={true} />
+					<TweetButton fontSize='16px' disabled={Boolean(!message.length)} isTypeSubmit={true} />
 				</div>
 			</div>
 		</form>

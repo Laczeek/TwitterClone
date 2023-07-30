@@ -9,7 +9,7 @@ interface PickerModalPropsTypes {
 
 const PickerModal = ({ onAddEmoji, hideModal }: PickerModalPropsTypes): JSX.Element => {
 	return createPortal(
-		<div className='fixed z-10 top-[60%] left-[50%]  sm:top-[55%] sm:left-[35%] lg:left-[23%] xl:left-[33%]  translate-x-[-50%] translate-y-[-50%]'>
+		<div className='fixed z-10 top-[46%] left-[50%] sm:top-[45%] sm:left-[35%] lg:left-[23%] xl:left-[38%] xl:top-[45%]  translate-x-[-50%] translate-y-[-50%]'>
 			<Picker
 				data={data}
 				perLine={7}

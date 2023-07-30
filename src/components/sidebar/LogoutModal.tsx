@@ -10,18 +10,18 @@ interface LogoutModalPropsType {
 }
 
 const LogoutModal = ({ closeModal }: LogoutModalPropsType): JSX.Element => {
-	const userAvatar = useSelector((state: RootStateType) => state.user.userToken?.photoURL);
+	const userData = useSelector((state: RootStateType) => state.user.userToken);
 
 	return (
 		<Modal closeModal={closeModal}>
 			<div>
 				<div className='flex justify-between items-center border-b border-gray-border p-4'>
-					<img src={userAvatar} className='h-11 w-11 rounded-full' />
+					<img src={userData?.photoURL} className='h-11 w-11 rounded-full' />
 					<CheckBadgeIcon className='text-blue w-6 h-6' />
 				</div>
 				<Form className='block linkHoverAnimation ' action='/logout' method='post'>
 					<button type='submit' className='p-4 dark:text-white text-black'>
-						Log out @patrykpopiela
+						Log out {userData?.email.replace('gmail.com', '')}
 					</button>
 				</Form>
 			</div>

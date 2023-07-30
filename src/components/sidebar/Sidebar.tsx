@@ -32,7 +32,7 @@ const LINKS = [
 
 const Sidebar = (): JSX.Element => {
 	const [isShowingModal, toggleModalHandler] = useModal();
-	const userData = useSelector((state:RootStateType) => state.user.userToken)
+	const userData = useSelector((state: RootStateType) => state.user.userToken);
 	const dispatch: AppDispatchType = useDispatch();
 	const isNavShowing = useSelector((state: RootStateType) => state.ui.isNavShowing);
 
