@@ -10,6 +10,7 @@ import loadingSpinner from '../assets/spinnerLoader.svg';
 
 const HomePage = (): JSX.Element => {
 	const [isLoading, setIsLoading] = useState(true);
+	const [isError, setIsError] = useState<null | string>(null);
 	const [posts, setPosts] = useState<FetchedPostType[] | []>([]);
 
 	useEffect(() => {
@@ -30,6 +31,7 @@ const HomePage = (): JSX.Element => {
 				}
 			} catch (error) {
 				console.log(error);
+				setIsError('Failed to download posts!');
 			}
 			setIsLoading(false);
 		});
@@ -46,6 +48,9 @@ const HomePage = (): JSX.Element => {
 				<div className='flex justify-center items-center mt-10'>
 					<img src={loadingSpinner} className='animate-spin' />
 				</div>
+			)}
+			{!isLoading && isError && (
+				<p className='text-2xl text-center mt-5 font-bold dark:text-white text-black'>{isError}</p>
 			)}
 		</>
 	);

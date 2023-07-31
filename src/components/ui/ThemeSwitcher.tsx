@@ -19,8 +19,6 @@ const ThemeSwitcher = (): JSX.Element => {
 		localStorage.setItem('theme', theme);
 	}, [theme]);
 
-	console.log(theme);
-
 	return (
 		<button onClick={changeThemeHandler}>
 			{theme === 'dark' ? <SunIcon className='h-6 w-6 text-white' /> : <MoonIcon className='h-6 w-6 text-black' />}

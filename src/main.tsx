@@ -13,11 +13,14 @@ import { action as logoutAction } from './pages/Logout.ts';
 import { loader as protectLoader } from './firebase/authHelpers.ts';
 
 import './index.css';
+import ErrorBoundary from './components/ui/ErrorBoundary.tsx';
+import ErrorPage from './pages/ErrorPage.tsx';
 
 const router = createBrowserRouter([
-	{ path: '/', element: <LoginPage /> },
+	{ path: '/', element: <LoginPage />, errorElement: <ErrorPage /> },
 	{
 		path: '/home',
+
 		element: <RootLayout />,
 		loader: protectLoader,
 		children: [{ index: true, element: <HomePage /> }],
@@ -28,7 +31,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
 		<Provider store={store}>
-			<RouterProvider router={router} />
+			<ErrorBoundary>
+				<RouterProvider router={router} />
+			</ErrorBoundary>
 		</Provider>
 	</React.StrictMode>
 );
