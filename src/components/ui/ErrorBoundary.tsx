@@ -23,7 +23,7 @@ class ErrorBoundary extends Component<PropsType> {
 				<main className='container mx-auto max-w-[1400px] min-h-screen flex xl:px-6  xl:gap-x-4'>
 					<Sidebar />
 					<div className='grow  border-l border-r sm:border-gray-border'>
-						<Title />
+						<Title title='Error' isArrowNeeded = {true}/>
 						<p className='text-2xl text-center mt-5 font-bold dark:text-white text-black'>Something went wrong!!!</p>
 					</div>
 				</main>

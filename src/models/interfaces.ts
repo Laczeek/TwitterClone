@@ -16,20 +16,39 @@ export interface TokenType {
 	photoURL: string;
 	userId: string;
 	expirationTime: number;
+	identyfier: string;
+}
+export interface CommentPostType {
+	id: string;
+	name: string;
+	identyfier: string;
+	photoURL: string;
+	userId: string;
+	message: string;
+	likes: object;
+	whenAdded: number;
 }
 
 export interface PostType {
 	name: string;
-	email: string;
+	identyfier: string;
 	photoURL: string;
 	uid: string;
 	whenAdded: number;
-	//do zmiany w przyszłości to comments i likes
-	comments: [] | string[];
-	likes: [] | string[];
+	comments: CommentPostType[];
+	likes: object;
 	message: string;
+	id: string;
 }
 
-export interface FetchedPostType extends PostType {
+export interface FetchedPostType {
+	name: string;
+	identyfier: string;
+	photoURL: string;
+	uid: string;
+	whenAdded: number;
 	id: string;
+	comments: object;
+	likes: object;
+	message: string;
 }

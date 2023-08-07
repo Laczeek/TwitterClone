@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-
+import { Link } from 'react-router-dom';
 import { RootStateType } from '../../store/store';
 import { AppDispatchType } from '../../store/store';
 import { uiActions } from '../../store/ui-slice';
@@ -18,23 +18,22 @@ import {
 
 import SidebarLogo from './SidebarLogo';
 import SidebarLink from './SidebarLink';
-import TweetButton from '../ui/TweetButton';
 import LogoutModal from './LogoutModal';
 
 const LINKS = [
-	{ text: 'Home', icon: HomeIcon },
-	{ text: 'Explore', icon: HashtagIcon },
-	{ text: 'Notifications', icon: BellIcon },
-	{ text: 'Messages', icon: EnvelopeIcon },
-	{ text: 'Profile', icon: UserIcon },
-	{ text: 'More', icon: EllipsisHorizontalCircleIcon },
+	{ text: 'Home', icon: HomeIcon, href: '/home' },
+	{ text: 'Explore', icon: HashtagIcon, href: '/home' },
+	{ text: 'Notifications', icon: BellIcon, href: '/home' },
+	{ text: 'Messages', icon: EnvelopeIcon, href: '/home' },
+	{ text: 'Profile', icon: UserIcon, href: '/home' },
+	{ text: 'More', icon: EllipsisHorizontalCircleIcon, href: '/home' },
 ];
 
 const Sidebar = (): JSX.Element => {
 	const [isShowingModal, toggleModalHandler] = useModal();
 	const userData = useSelector((state: RootStateType) => state.user.userToken);
-	const dispatch: AppDispatchType = useDispatch();
 	const isNavShowing = useSelector((state: RootStateType) => state.ui.isNavShowing);
+	const dispatch: AppDispatchType = useDispatch();
 
 	const hideNavigationHandler = () => {
 		dispatch(uiActions.toggleNavigation());
@@ -42,7 +41,7 @@ const Sidebar = (): JSX.Element => {
 
 	const openLogoutModal = () => {
 		hideNavigationHandler();
-		toggleModalHandler();
+		void toggleModalHandler();
 	};
 
 	return (
@@ -63,11 +62,19 @@ const Sidebar = (): JSX.Element => {
 
 				<div className='w-fit mt-1 mb-2 '>
 					{LINKS.map((link, index) => (
-						<SidebarLink key={index} text={link.text} Icon={link.icon} closeNav={hideNavigationHandler} />
+						<SidebarLink key={index} link={link} closeNav={hideNavigationHandler} />
 					))}
 				</div>
 				<div className='w-full hidden xl:block'>
-					<TweetButton fontSize='18px' width='100%' />
+					<Link
+						className='btn text-lg w-full text-center'
+						to='/home'
+						onClick={() => {
+							document.body.scrollTop = 0;
+							document.documentElement.scrollTop = 0;
+						}}>
+						Tweet
+					</Link>
 				</div>
 			</div>
 			<button className='linkHoverAnimation mb-1 rounded-full   xl:py-2 xl:px-4' onClick={openLogoutModal}>
@@ -75,7 +82,7 @@ const Sidebar = (): JSX.Element => {
 					<img src={userData?.photoURL} className='h-11 w-11 rounded-full' />
 					<div className='hidden xl:block'>
 						<p className='font-bold'>{userData?.name}</p>
-						<p className='text-sm opacity-40'>{userData?.email.replace('gmail.com', '')}</p>
+						<p className='text-sm opacity-40'>{userData?.identyfier}</p>
 					</div>
 					<EllipsisHorizontalIcon className='hidden xl:block h-5 w-5 dark:text-white text-black' />
 				</div>

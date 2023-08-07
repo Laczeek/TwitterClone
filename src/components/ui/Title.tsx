@@ -1,11 +1,18 @@
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid';
 import { uiActions } from '../../store/ui-slice';
 import { AppDispatchType } from '../../store/store';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
 import ThemeSwitcher from './ThemeSwitcher';
 
-const Title = (): JSX.Element => {
+interface TitlePropsType {
+	title: string;
+	isArrowNeeded: boolean;
+}
+
+const Title = ({ title, isArrowNeeded }: TitlePropsType): JSX.Element => {
 	const dispatch: AppDispatchType = useDispatch();
 
 	const showNavigationHandler = () => {
@@ -18,13 +25,17 @@ const Title = (): JSX.Element => {
 				<Bars3Icon className='h-7 w-7 text-blue  ' />
 			</button>
 
+			{isArrowNeeded && (
+				<Link to='/home'>
+					<ArrowLeftOnRectangleIcon className='dark:text-white text-black h-6 w-6 hover:text-blue' />
+				</Link>
+			)}
+
 			<ThemeSwitcher />
 
-			<p className='dark:text-gray-extraLight text-gray-dark text-xl font-bold'>Home</p>
+			<p className='dark:text-gray-extraLight text-gray-dark text-xl font-bold'>{title}</p>
 		</div>
 	);
 };
 
 export default Title;
-
-// ADD TITLE TEXT BASED ON LINK
