@@ -9,14 +9,14 @@ interface CommentModalPropsType {
 	userDetails: TokenType;
 	postDetails: FetchedPostType | PostType;
 	howMuchTimeAgo: string;
-	onSubmit: (event: React.FormEvent<HTMLFormElement>, message: string) => void;
+	onSubmit: (event: React.FormEvent<HTMLFormElement>, message: string, file: string | null) => void;
 }
 
 const CommentModal = ({ closeModal, userDetails, postDetails, howMuchTimeAgo, onSubmit }: CommentModalPropsType) => {
 	return (
 		<Modal closeModal={closeModal}>
 			<div
-				className='absolute top-[50%] sm:top-[30%]  translate-y-[-50%]   dark:bg-black bg-white  drop-shadow-[0_0_3px_#ffffffd6] rounded-2xl overflow-hidden w-[90%] sm:w-[70%]  max-w-[600px] '
+				className='absolute top-[50%]   translate-y-[-50%]   dark:bg-black bg-white  drop-shadow-[0_0_3px_#ffffffd6] rounded-2xl overflow-hidden w-[90%] sm:w-[70%]  max-w-[600px] '
 				onClick={event => event.stopPropagation()}>
 				<div className='p-2 border-b border-gray-border flex items-center'>
 					<button

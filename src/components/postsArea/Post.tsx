@@ -1,7 +1,9 @@
-import { ref, push, serverTimestamp } from 'firebase/database';
 import { useSubmit } from 'react-router-dom';
+import { ref as dbRef, push, serverTimestamp } from 'firebase/database';
+import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import * as uuid from 'uuid';
 
-import { auth, database } from '../../firebase/firebaseConfig';
+import { auth, database, storage } from '../../firebase/firebaseConfig';
 import { ArrowsRightLeftIcon, ShareIcon } from '@heroicons/react/24/outline';
 import { FetchedPostType, PostType, TokenType } from '../../models/interfaces';
 import LikeButton from './LikeButton';
@@ -17,21 +19,21 @@ interface PostPropsType {
 }
 
 const Post = ({ post, userData }: PostPropsType): JSX.Element => {
-	const submit = useSubmit();
 	console.log('POST');
+	const submit = useSubmit();
 	const howMuchTimeAgo = useDate(post.whenAdded);
 	const [isModalShowing, toggleModalHandler] = useModal();
 
-	const handleCommentClick = (event: React.FormEvent<HTMLFormElement>, message: string) => {
+	const handleCommentClick = (event: React.FormEvent<HTMLFormElement>, message: string, file: string | null) => {
 		event.preventDefault();
-		void addCommentHandler(message);
+		void addCommentHandler(message, file);
 	};
 
-	const addCommentHandler = async (message: string) => {
+	const addCommentHandler = async (message: string, file: string | null) => {
 		if (auth.currentUser) {
 			try {
-				const commentRef = ref(database, `/posts/${post.id}/comments`);
-				const comment = {
+				const commentRef = dbRef(database, `/posts/${post.id}/comments`);
+				let comment: any = {
 					name: userData.name,
 					message,
 					userId: userData.userId,
@@ -39,6 +41,23 @@ const Post = ({ post, userData }: PostPropsType): JSX.Element => {
 					photoURL: userData.photoURL,
 					whenAdded: serverTimestamp(),
 				};
+
+				if (file) {
+					const generatedId = uuid.v4();
+					const storageRef = ref(storage, `images/${generatedId}`);
+					await uploadString(storageRef, file, 'data_url');
+					const fileUrl = await getDownloadURL(storageRef);
+					comment = {
+						name: userData.name,
+						message,
+						userId: userData.userId,
+						identyfier: userData.identyfier,
+						commentFileUrl: fileUrl,
+						photoURL: userData.photoURL,
+						whenAdded: serverTimestamp(),
+					};
+				}
+
 				await push(commentRef, comment);
 				toggleModalHandler();
 			} catch (error) {
@@ -73,6 +92,10 @@ const Post = ({ post, userData }: PostPropsType): JSX.Element => {
 
 				<p className='mt-3 mb-4 break-all'>{post.message}</p>
 
+				{post?.postFileUrl && (
+					<img src={post.postFileUrl} className='my-4 rounded-xl max-h-[600px]   mx-auto  w-full object-cover' />
+				)}
+
 				<div className='flex justify-between items-center'>
 					<CommentButton comments={post.comments} userId={userData.userId} showModal={toggleModalHandler} />
 					<button
@@ -88,9 +111,9 @@ const Post = ({ post, userData }: PostPropsType): JSX.Element => {
 					</button>
 				</div>
 			</div>
-			{post.uid === userData.userId && (
+			{(post.uid === userData.userId || userData.userId === import.meta.env.VITE_ADMIN_ID) && (
 				<div className='self-start'>
-					<DeleteButton postId={post.id} userId={userData.userId} />
+					<DeleteButton post={post} />
 				</div>
 			)}
 		</div>

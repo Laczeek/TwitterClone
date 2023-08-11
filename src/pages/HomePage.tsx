@@ -6,7 +6,7 @@ import { off, onValue, ref } from 'firebase/database';
 import { RootStateType } from '../store/store';
 import { database } from '../firebase/firebaseConfig';
 import Title from '../components/ui/Title';
-import AddPostForm from '../components/postsArea/AddPost';
+import AddPost from '../components/postsArea/AddPost';
 import Post from '../components/postsArea/Post';
 import { FetchedPostType } from '../models/interfaces';
 import loadingSpinner from '../assets/spinnerLoader.svg';
@@ -52,7 +52,7 @@ const HomePage = (): JSX.Element => {
 	return (
 		<>
 			<Title title='Home' isArrowNeeded={false} />
-			<AddPostForm />
+			<AddPost userData={userData!}/>
 			{!isLoading &&
 				!isError &&
 				posts.map(post => (

@@ -13,11 +13,8 @@ interface CommentPropsType {
 const Comment = ({ comment, post, userId }: CommentPropsType): JSX.Element => {
 	const howMuchTimeAgo = useDate(comment.whenAdded);
 
-	console.log(post.uid);
-	console.log(userId);
-
 	return (
-		<div className='flex  gap-x-6 p-3 border-b border-gray-border hover:postHoverAnimation'>
+		<div className='flex  gap-x-6 p-3 border-b border-gray-border '>
 			<img src={comment.photoURL} className='h-9 w-9 rounded-full' />
 
 			<div className='grow mt-1 dark:text-white text-black'>
@@ -28,6 +25,10 @@ const Comment = ({ comment, post, userId }: CommentPropsType): JSX.Element => {
 					</span>
 				</p>
 				<p className='mt-2 mb-2 break-all'>{comment.message}</p>
+
+				{comment?.commentFileUrl && (
+					<img src={comment.commentFileUrl} className='my-4 rounded-xl max-h-[600px] w-full object-cover' />
+				)}
 
 				<div className='flex justify-between items-center'>
 					<button
@@ -43,9 +44,9 @@ const Comment = ({ comment, post, userId }: CommentPropsType): JSX.Element => {
 					</button>
 				</div>
 			</div>
-			{comment.userId === userId && (
+			{(comment.userId === userId || userId === import.meta.env.VITE_ADMIN_ID) && (
 				<div className='self-start'>
-					<DeleteButton postId={post.id} userId={userId} commentId={comment.id} />
+					<DeleteButton post={post} comment={comment} />
 				</div>
 			)}
 		</div>

@@ -10,6 +10,7 @@ import Title from '../components/ui/Title';
 import Post from '../components/postsArea/Post';
 import loadingSpinner from '../assets/spinnerLoader.svg';
 import Comment from '../components/postsArea/Comment';
+import useTitle from '../hooks/useTitle';
 
 const PostPage = (): JSX.Element => {
 	const userData = useSelector((state: RootStateType) => state.user.userToken);
@@ -19,6 +20,7 @@ const PostPage = (): JSX.Element => {
 	const [isError, setIsError] = useState<null | string>(null);
 	const [post, setPost] = useState<PostType | null>(null);
 
+	useTitle(post?.name && 'Post-' + post.name);
 	console.log('POST PAGE');
 
 	useEffect(() => {

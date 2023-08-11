@@ -1,31 +1,54 @@
 import { useSubmit } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { push, ref, serverTimestamp } from 'firebase/database';
+import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import { push, ref as dbRef, serverTimestamp } from 'firebase/database';
+import * as uuid from 'uuid';
 
-import { RootStateType } from '../../store/store';
-import { auth, database } from '../../firebase/firebaseConfig';
+
+import { auth, database, storage } from '../../firebase/firebaseConfig';
 import PostForm from './PostForm';
+import { TokenType } from '../../models/interfaces';
 
-const AddPostForm = (): JSX.Element => {
-	const userData = useSelector((state: RootStateType) => state.user.userToken);
+interface AddPostPropsType {
+	userData: TokenType
+}
+
+const AddPost = ({userData}: AddPostPropsType): JSX.Element => {
 	const submit = useSubmit();
 
-	const handleAddPostClick = (event: React.FormEvent<HTMLFormElement>, message: string) => {
+	const handleAddPostClick = (event: React.FormEvent<HTMLFormElement>, message: string, file: string | null) => {
 		event.preventDefault();
-		void addPostHandler(message);
+		void addPostHandler(message, file);
 	};
 
-	const addPostHandler = async (message: string): Promise<void> => {
+	const addPostHandler = async (message: string, file: string | null): Promise<void> => {
 		if (auth.currentUser || message.trim().length !== 0) {
 			try {
-				await push(ref(database, 'posts/'), {
+				let post: any = {
 					uid: userData?.userId,
 					identyfier: userData?.identyfier,
 					name: userData?.name,
 					photoURL: userData?.photoURL,
 					message,
 					whenAdded: serverTimestamp(),
-				});
+				};
+
+				if (file) {
+					const generatedId = uuid.v4();
+					const storageRef = ref(storage, `images/${generatedId}`);
+					await uploadString(storageRef, file, 'data_url');
+					const fileUrl = await getDownloadURL(storageRef);
+					post = {
+						uid: userData?.userId,
+						identyfier: userData?.identyfier,
+						name: userData?.name,
+						photoURL: userData?.photoURL,
+						postFileUrl: fileUrl,
+						message,
+						whenAdded: serverTimestamp(),
+					};
+				}
+
+				await push(dbRef(database, 'posts/'), post);
 			} catch (error) {
 				console.log(error);
 				window.alert('Add post failed!');
@@ -42,7 +65,7 @@ const AddPostForm = (): JSX.Element => {
 		<div className='border-b border-gray-border'>
 			<PostForm
 				onSubmit={handleAddPostClick}
-				userPhoto={userData!.photoURL}
+				userPhoto={userData.photoURL}
 				buttonText='Tweet'
 				placeholderText="What's happening?"
 			/>
@@ -50,4 +73,4 @@ const AddPostForm = (): JSX.Element => {
 	);
 };
 
-export default AddPostForm;
+export default AddPost;

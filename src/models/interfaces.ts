@@ -22,6 +22,7 @@ export interface CommentPostType {
 	id: string;
 	name: string;
 	identyfier: string;
+	commentFileUrl?:string;
 	photoURL: string;
 	userId: string;
 	message: string;
@@ -35,6 +36,7 @@ export interface PostType {
 	photoURL: string;
 	uid: string;
 	whenAdded: number;
+	postFileUrl?: string;
 	comments: CommentPostType[];
 	likes: object;
 	message: string;
@@ -47,8 +49,10 @@ export interface FetchedPostType {
 	photoURL: string;
 	uid: string;
 	whenAdded: number;
+	postFileUrl?: string;
 	id: string;
 	comments: object;
 	likes: object;
 	message: string;
 }
+
