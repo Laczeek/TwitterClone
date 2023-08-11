@@ -1,11 +1,11 @@
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid';
 import { uiActions } from '../../store/ui-slice';
 import { AppDispatchType } from '../../store/store';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
 import ThemeSwitcher from './ThemeSwitcher';
+import { useNavigate } from 'react-router-dom';
 
 interface TitlePropsType {
 	title: string;
@@ -14,6 +14,7 @@ interface TitlePropsType {
 
 const Title = ({ title, isArrowNeeded }: TitlePropsType): JSX.Element => {
 	const dispatch: AppDispatchType = useDispatch();
+	const navigate = useNavigate();
 
 	const showNavigationHandler = () => {
 		dispatch(uiActions.toggleNavigation());
@@ -26,9 +27,9 @@ const Title = ({ title, isArrowNeeded }: TitlePropsType): JSX.Element => {
 			</button>
 
 			{isArrowNeeded && (
-				<Link to='/home'>
+				<button onClick={() => navigate(-1)}>
 					<ArrowLeftOnRectangleIcon className='dark:text-white text-black h-6 w-6 hover:text-blue' />
-				</Link>
+				</button>
 			)}
 
 			<ThemeSwitcher />

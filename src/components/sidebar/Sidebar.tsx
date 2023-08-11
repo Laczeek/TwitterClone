@@ -22,8 +22,7 @@ import LogoutModal from './LogoutModal';
 
 const LINKS = [
 	{ text: 'Home', icon: HomeIcon, href: '/home' },
-	{ text: 'Explore', icon: HashtagIcon, href: '/home' },
-	{ text: 'Notifications', icon: BellIcon, href: '/home' },
+	{ text: 'Explore', icon: HashtagIcon, href: '/home/most-liked' },
 	{ text: 'Messages', icon: EnvelopeIcon, href: '/home' },
 	{ text: 'Profile', icon: UserIcon, href: '/home' },
 	{ text: 'More', icon: EllipsisHorizontalCircleIcon, href: '/home' },
