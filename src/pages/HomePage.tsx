@@ -1,23 +1,24 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { off, onValue, ref } from 'firebase/database';
 
-import { RootStateType } from '../store/store';
+import { AppDispatchType, RootStateType } from '../store/store';
 import { database } from '../firebase/firebaseConfig';
 import Title from '../components/ui/Title';
 import AddPost from '../components/postsArea/AddPost';
 import Post from '../components/postsArea/Post';
 import { FetchedPostType } from '../models/interfaces';
 import loadingSpinner from '../assets/spinnerLoader.svg';
+import { uiActions } from '../store/ui-slice';
 
 const HomePage = (): JSX.Element => {
 	const userData = useSelector((state: RootStateType) => state.user.userToken);
+	const posts = useSelector((state:RootStateType) => state.ui.posts);
+	const dispatch:AppDispatchType = useDispatch();
+	
 	const [isLoading, setIsLoading] = useState(true);
 	const [isError, setIsError] = useState<null | string>(null);
-	const [posts, setPosts] = useState<FetchedPostType[] | []>([]);
-
-	console.log('HOME PAGE');
 
 	useEffect(() => {
 		const postsRef = ref(database, 'posts/');
@@ -35,7 +36,7 @@ const HomePage = (): JSX.Element => {
 					}
 					const sortedPosts = posts.sort((a, b) => b.whenAdded - a.whenAdded);
 
-					setPosts(sortedPosts);
+					dispatch(uiActions.setPosts(sortedPosts))
 				} else {
 					setIsError('Failed to download posts!');
 				}
@@ -47,12 +48,12 @@ const HomePage = (): JSX.Element => {
 		});
 
 		return () => off(postsRef, 'value', listener);
-	}, []);
+	}, [dispatch]);
 
 	return (
 		<>
 			<Title title='Home' isArrowNeeded={false} />
-			<AddPost userData={userData!}/>
+			<AddPost userData={userData!} />
 			{!isLoading &&
 				!isError &&
 				posts.map(post => (

@@ -17,6 +17,7 @@ export interface TokenType {
 	userId: string;
 	expirationTime: number;
 	identyfier: string;
+	description : string;
 }
 export interface CommentPostType {
 	id: string;
@@ -34,7 +35,7 @@ export interface PostType {
 	name: string;
 	identyfier: string;
 	photoURL: string;
-	uid: string;
+	userId: string;
 	whenAdded: number;
 	postFileUrl?: string;
 	comments: CommentPostType[];
@@ -47,7 +48,7 @@ export interface FetchedPostType {
 	name: string;
 	identyfier: string;
 	photoURL: string;
-	uid: string;
+	userId: string;
 	whenAdded: number;
 	postFileUrl?: string;
 	id: string;
@@ -56,3 +57,11 @@ export interface FetchedPostType {
 	message: string;
 }
 
+export interface UserData {
+	description: string;
+	email:string;
+	identyfier:string;
+	name:string;
+	photoURL: string;
+	userId:string;
+}

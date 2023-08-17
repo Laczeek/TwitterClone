@@ -16,12 +16,12 @@ const PostPage = (): JSX.Element => {
 	const userData = useSelector((state: RootStateType) => state.user.userToken);
 
 	const { id } = useParams();
+	
 	const [isLoading, setIsLoading] = useState(true);
 	const [isError, setIsError] = useState<null | string>(null);
 	const [post, setPost] = useState<PostType | null>(null);
 
-	useTitle(post?.name && 'Post-' + post.name);
-	console.log('POST PAGE');
+	useTitle(post?.name && 'Post-' + post.name );
 
 	useEffect(() => {
 		const postRef = ref(database, `posts/${id!}`);
@@ -58,7 +58,7 @@ const PostPage = (): JSX.Element => {
 
 	return (
 		<>
-			<Title title='Tweet' isArrowNeeded={true} />
+			<Title title='Tweet / Comments' isArrowNeeded={true} />
 			{isLoading && !isError && (
 				<div className='flex justify-center items-center mt-10'>
 					<img src={loadingSpinner} className='animate-spin' />

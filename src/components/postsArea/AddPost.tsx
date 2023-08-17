@@ -3,17 +3,20 @@ import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import { push, ref as dbRef, serverTimestamp } from 'firebase/database';
 import * as uuid from 'uuid';
 
-
 import { auth, database, storage } from '../../firebase/firebaseConfig';
 import PostForm from './PostForm';
 import { TokenType } from '../../models/interfaces';
+import { useDispatch } from 'react-redux';
+import { AppDispatchType } from '../../store/store';
+import { uiActions } from '../../store/ui-slice';
 
 interface AddPostPropsType {
-	userData: TokenType
+	userData: TokenType;
 }
 
-const AddPost = ({userData}: AddPostPropsType): JSX.Element => {
+const AddPost = ({ userData }: AddPostPropsType): JSX.Element => {
 	const submit = useSubmit();
+	const dispatch: AppDispatchType = useDispatch();
 
 	const handleAddPostClick = (event: React.FormEvent<HTMLFormElement>, message: string, file: string | null) => {
 		event.preventDefault();
@@ -21,13 +24,14 @@ const AddPost = ({userData}: AddPostPropsType): JSX.Element => {
 	};
 
 	const addPostHandler = async (message: string, file: string | null): Promise<void> => {
-		if (auth.currentUser || message.trim().length !== 0) {
+		if (auth.currentUser && message.trim().length > 0) {
+			dispatch(uiActions.changeBtnLoadingState(true));
 			try {
 				let post: any = {
-					uid: userData?.userId,
-					identyfier: userData?.identyfier,
-					name: userData?.name,
-					photoURL: userData?.photoURL,
+					userId: userData.userId,
+					identyfier: userData.identyfier,
+					name: userData.name,
+					photoURL: userData.photoURL,
 					message,
 					whenAdded: serverTimestamp(),
 				};
@@ -38,10 +42,10 @@ const AddPost = ({userData}: AddPostPropsType): JSX.Element => {
 					await uploadString(storageRef, file, 'data_url');
 					const fileUrl = await getDownloadURL(storageRef);
 					post = {
-						uid: userData?.userId,
-						identyfier: userData?.identyfier,
-						name: userData?.name,
-						photoURL: userData?.photoURL,
+						userId: userData.userId,
+						identyfier: userData.identyfier,
+						name: userData.name,
+						photoURL: userData.photoURL,
 						postFileUrl: fileUrl,
 						message,
 						whenAdded: serverTimestamp(),
@@ -55,10 +59,9 @@ const AddPost = ({userData}: AddPostPropsType): JSX.Element => {
 			}
 		} else {
 			window.alert('Something has gone wrong, you will be redirected to the login page.');
-			setTimeout(() => {
-				return submit(null, { method: 'post', action: '/logout' });
-			}, 1000);
+			return submit(null, { method: 'post', action: '/logout' });
 		}
+		dispatch(uiActions.changeBtnLoadingState(false));
 	};
 
 	return (

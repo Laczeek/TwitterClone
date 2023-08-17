@@ -1,4 +1,5 @@
-import { useSubmit } from 'react-router-dom';
+import { useNavigate, useSubmit } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { ref as dbRef, push, serverTimestamp } from 'firebase/database';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import * as uuid from 'uuid';
@@ -12,6 +13,9 @@ import DeleteButton from './DeleteButton';
 import useModal from '../../hooks/useModal';
 import CommentModal from './CommentModal';
 import useDate from '../../hooks/useDate';
+import { AppDispatchType } from '../../store/store';
+import { uiActions } from '../../store/ui-slice';
+import ProfileModal from '../ui/ProfileModal';
 
 interface PostPropsType {
 	post: FetchedPostType | PostType;
@@ -19,10 +23,12 @@ interface PostPropsType {
 }
 
 const Post = ({ post, userData }: PostPropsType): JSX.Element => {
-	console.log('POST');
 	const submit = useSubmit();
+	const navigate = useNavigate();
+	const dispatch: AppDispatchType = useDispatch();
 	const howMuchTimeAgo = useDate(post.whenAdded);
 	const [isModalShowing, toggleModalHandler] = useModal();
+	const [isProfileShowing, toggleIsProfileShowing] = useModal();
 
 	const handleCommentClick = (event: React.FormEvent<HTMLFormElement>, message: string, file: string | null) => {
 		event.preventDefault();
@@ -30,7 +36,8 @@ const Post = ({ post, userData }: PostPropsType): JSX.Element => {
 	};
 
 	const addCommentHandler = async (message: string, file: string | null) => {
-		if (auth.currentUser) {
+		if (auth.currentUser && message.trim().length > 0) {
+			dispatch(uiActions.changeBtnLoadingState(true));
 			try {
 				const commentRef = dbRef(database, `/posts/${post.id}/comments`);
 				let comment: any = {
@@ -67,10 +74,11 @@ const Post = ({ post, userData }: PostPropsType): JSX.Element => {
 		} else {
 			return submit(null, { method: 'post', action: '/logout' });
 		}
+		dispatch(uiActions.changeBtnLoadingState(false));
 	};
 
 	return (
-		<div className='flex  gap-x-6 p-3 border-b border-gray-border hover:postHoverAnimation'>
+		<div className=' flex  gap-x-6 p-3 border-b border-gray-border hover:postHoverAnimation'>
 			{isModalShowing && (
 				<CommentModal
 					closeModal={toggleModalHandler}
@@ -80,7 +88,19 @@ const Post = ({ post, userData }: PostPropsType): JSX.Element => {
 					onSubmit={handleCommentClick}
 				/>
 			)}
-			<img src={post.photoURL} className='h-12 w-12 rounded-full' />
+			{isProfileShowing && <ProfileModal profileData={post} />}
+
+			<img
+				src={post.photoURL}
+				className='block h-12 w-12 rounded-full cursor-pointer'
+				onMouseEnter={toggleIsProfileShowing}
+				onMouseLeave={toggleIsProfileShowing}
+				onClick={event => {
+					event.preventDefault();
+					event.stopPropagation();
+					navigate(`/home/profile/${post.userId}`);
+				}}
+			/>
 
 			<div className='grow mt-2 dark:text-white text-black'>
 				<p>
@@ -92,9 +112,7 @@ const Post = ({ post, userData }: PostPropsType): JSX.Element => {
 
 				<p className='mt-3 mb-4 break-all'>{post.message}</p>
 
-				{post?.postFileUrl && (
-					<img src={post.postFileUrl} className='my-4 rounded-xl max-h-[600px]   mx-auto  w-full object-cover' />
-				)}
+				{post?.postFileUrl && <img src={post.postFileUrl} className='my-4 rounded-xl  mx-auto w-[80%] max-h-[500px]  object-cover' />}
 
 				<div className='flex justify-between items-center'>
 					<CommentButton comments={post.comments} userId={userData.userId} showModal={toggleModalHandler} />
@@ -111,7 +129,7 @@ const Post = ({ post, userData }: PostPropsType): JSX.Element => {
 					</button>
 				</div>
 			</div>
-			{(post.uid === userData.userId || userData.userId === import.meta.env.VITE_ADMIN_ID) && (
+			{(post.userId === userData.userId || userData.userId === import.meta.env.VITE_ADMIN_ID) && (
 				<div className='self-start'>
 					<DeleteButton post={post} />
 				</div>

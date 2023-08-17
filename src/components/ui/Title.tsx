@@ -27,7 +27,7 @@ const Title = ({ title, isArrowNeeded }: TitlePropsType): JSX.Element => {
 			</button>
 
 			{isArrowNeeded && (
-				<button onClick={() => navigate(-1)}>
+				<button onClick={() => navigate('..', { relative: 'path' })}>
 					<ArrowLeftOnRectangleIcon className='dark:text-white text-black h-6 w-6 hover:text-blue' />
 				</button>
 			)}

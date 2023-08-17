@@ -22,7 +22,7 @@ const RootLayout = (): JSX.Element => {
 	return (
 		<main className='container mx-auto  max-w-[1400px] min-h-screen flex xl:px-6  xl:gap-x-4 '>
 			<Sidebar />
-			<div className='grow border-l border-r sm:border-gray-border'>
+			<div className='grow border-l border-r sm:border-gray-border pb-3'>
 				<Outlet />
 			</div>
 			<AdsSidebar />

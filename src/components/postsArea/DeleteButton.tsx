@@ -1,5 +1,5 @@
 import { ref as dbRef, remove } from 'firebase/database';
-import { useSubmit } from 'react-router-dom';
+import { useNavigate, useSubmit } from 'react-router-dom';
 
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { auth, database, storage } from '../../firebase/firebaseConfig';
@@ -13,6 +13,7 @@ interface DeleteButtonPropsType {
 
 const DeleteButton = ({ post, comment }: DeleteButtonPropsType): JSX.Element => {
 	const submit = useSubmit();
+	const navigate = useNavigate();
 
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		event.preventDefault();
@@ -21,7 +22,7 @@ const DeleteButton = ({ post, comment }: DeleteButtonPropsType): JSX.Element => 
 
 	const deleteHandler = async () => {
 		if (
-			(auth.currentUser && auth.currentUser.uid === post.uid) ||
+			(auth.currentUser && auth.currentUser.uid === post.userId) ||
 			(auth.currentUser && auth.currentUser.uid === comment?.userId) ||
 			(auth.currentUser && auth.currentUser.uid === import.meta.env.VITE_ADMIN_ID)
 		) {
@@ -63,6 +64,7 @@ const DeleteButton = ({ post, comment }: DeleteButtonPropsType): JSX.Element => 
 						}
 					}
 					await remove(postRef);
+					navigate('/home');
 				} else {
 					return;
 				}

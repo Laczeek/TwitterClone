@@ -1,8 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
 import { ArrowsRightLeftIcon, ShareIcon } from '@heroicons/react/24/outline';
 import { CommentPostType, PostType } from '../../models/interfaces';
 import LikeButton from './LikeButton';
 import DeleteButton from './DeleteButton';
 import useDate from '../../hooks/useDate';
+import useModal from '../../hooks/useModal';
+import ProfileModal from '../ui/ProfileModal';
 
 interface CommentPropsType {
 	comment: CommentPostType;
@@ -11,11 +15,20 @@ interface CommentPropsType {
 }
 
 const Comment = ({ comment, post, userId }: CommentPropsType): JSX.Element => {
+	const navigate = useNavigate();
 	const howMuchTimeAgo = useDate(comment.whenAdded);
+	const [isProfileShowing, toggleIsProfileShowing] = useModal();
 
 	return (
 		<div className='flex  gap-x-6 p-3 border-b border-gray-border '>
-			<img src={comment.photoURL} className='h-9 w-9 rounded-full' />
+			{isProfileShowing && <ProfileModal profileData={comment} />}
+			<img
+				src={comment.photoURL}
+				className='h-9 w-9 rounded-full cursor-pointer'
+				onMouseEnter={toggleIsProfileShowing}
+				onMouseLeave={toggleIsProfileShowing}
+				onClick={() => navigate(`/home/profile/${comment.userId}`)}
+			/>
 
 			<div className='grow mt-1 dark:text-white text-black'>
 				<p>
@@ -27,7 +40,7 @@ const Comment = ({ comment, post, userId }: CommentPropsType): JSX.Element => {
 				<p className='mt-2 mb-2 break-all'>{comment.message}</p>
 
 				{comment?.commentFileUrl && (
-					<img src={comment.commentFileUrl} className='my-4 rounded-xl max-h-[600px] w-full object-cover' />
+					<img src={comment.commentFileUrl} className='my-4 rounded-xl mx-auto w-[80%] max-h-[500px] object-cover' />
 				)}
 
 				<div className='flex justify-between items-center'>

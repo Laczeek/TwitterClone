@@ -17,6 +17,8 @@ import { loader as protectLoader } from './firebase/authHelpers.ts';
 
 import './index.css';
 import MostLikedPage from './pages/MostLikedPage.tsx';
+import MyProfilePage from './pages/MyProfilePage.tsx';
+import ProfilePage from './pages/ProfilePage.tsx';
 
 const router = createBrowserRouter([
 	{ path: '/', element: <LoginPage />, errorElement: <ErrorPage /> },
@@ -28,7 +30,9 @@ const router = createBrowserRouter([
 		children: [
 			{ index: true, element: <HomePage /> },
 			{ path: ':id', element: <PostPage /> },
-			{ path: 'most-liked', element: <MostLikedPage /> },
+			{ path: 'most-liked', element: <MostLikedPage />, children: [{ path: ':id', element: <PostPage /> }] },
+			{ path: 'my-profile', element: <MyProfilePage /> },
+			{ path: 'profile/:id', element: <ProfilePage /> },
 		],
 	},
 	{ path: '/logout', action: actionLogout },

@@ -8,7 +8,6 @@ import useModal from '../../hooks/useModal';
 import {
 	HomeIcon,
 	HashtagIcon,
-	BellIcon,
 	EnvelopeIcon,
 	UserIcon,
 	EllipsisHorizontalCircleIcon,
@@ -24,7 +23,7 @@ const LINKS = [
 	{ text: 'Home', icon: HomeIcon, href: '/home' },
 	{ text: 'Explore', icon: HashtagIcon, href: '/home/most-liked' },
 	{ text: 'Messages', icon: EnvelopeIcon, href: '/home' },
-	{ text: 'Profile', icon: UserIcon, href: '/home' },
+	{ text: 'Profile', icon: UserIcon, href: '/home/my-profile' },
 	{ text: 'More', icon: EllipsisHorizontalCircleIcon, href: '/home' },
 ];
 
@@ -80,7 +79,7 @@ const Sidebar = (): JSX.Element => {
 				<div className='dark:text-white text-black  xl:flex xl:items-center xl:gap-x-2'>
 					<img src={userData?.photoURL} className='h-11 w-11 rounded-full' />
 					<div className='hidden xl:block'>
-						<p className='font-bold'>{userData?.name}</p>
+						<p className='font-bold text-sm'>{userData?.name}</p>
 						<p className='text-sm opacity-40'>{userData?.identyfier}</p>
 					</div>
 					<EllipsisHorizontalIcon className='hidden xl:block h-5 w-5 dark:text-white text-black' />

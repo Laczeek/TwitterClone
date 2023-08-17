@@ -7,7 +7,7 @@ const userToken = getTokenFromLocalStorage();
 const userSlice = createSlice({
 	name: 'user',
 	initialState: {
-		userToken
+		userToken,
 	},
 	reducers: {
 		login(state, action: PayloadAction<TokenType>) {
@@ -15,6 +15,12 @@ const userSlice = createSlice({
 		},
 		logout(state) {
 			state.userToken = null;
+		},
+		changeImage(state, action: PayloadAction<string>) {
+			state.userToken!.photoURL = action.payload;
+		},
+		changeDescription(state, action:PayloadAction<string>) {
+			state.userToken!.description = action.payload;
 		}
 	},
 });

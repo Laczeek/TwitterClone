@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { off, onValue, ref } from 'firebase/database';
 
 import { database } from '../firebase/firebaseConfig';
 import { FetchedPostType } from '../models/interfaces';
-import { RootStateType } from '../store/store';
+import { AppDispatchType, RootStateType } from '../store/store';
 import Title from '../components/ui/Title';
 import loadingSpinner from '../assets/spinnerLoader.svg';
 import Post from '../components/postsArea/Post';
 import useTitle from '../hooks/useTitle';
+import { uiActions } from '../store/ui-slice';
 
 const MostLikedPage = (): JSX.Element => {
 	const userData = useSelector((state: RootStateType) => state.user.userToken);
-	const [posts, setPosts] = useState<FetchedPostType[] | []>([]);
+	
+	const posts = useSelector((state:RootStateType) => state.ui.posts);
+	const dispatch:AppDispatchType = useDispatch();
+
 	const [isLoading, setIsLoading] = useState(true);
 	const [isError, setIsError] = useState<string | null>(null);
 
@@ -40,7 +44,7 @@ const MostLikedPage = (): JSX.Element => {
 						const bLikes = Object.keys(b.likes).length;
 						return bLikes - aLikes;
 					});
-					setPosts(sortedPosts);
+					dispatch(uiActions.setPosts(sortedPosts))
 				} else {
 					setIsError('Failed to download most liked posts!');
 				}
@@ -52,7 +56,7 @@ const MostLikedPage = (): JSX.Element => {
 		});
 
 		return () => off(postsRef, 'value', listener);
-	}, []);
+	}, [dispatch]);
 
 	return (
 		<>
@@ -61,7 +65,7 @@ const MostLikedPage = (): JSX.Element => {
 			{!isLoading &&
 				!isError &&
 				posts.map(post => (
-					<Link key={post.id} to={`/home/${post.id}`}>
+					<Link key={post.id} to={`${post.id}`}>
 						<Post post={post} userData={userData!} />
 					</Link>
 				))}

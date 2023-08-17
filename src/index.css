@@ -25,4 +25,6 @@ html {
 	.btn {
 		@apply inline-block rounded-full hover:bg-opacity-60 transition duration-200 py-3 px-6 bg-blue text-white disabled:cursor-not-allowed disabled:bg-gray-dark disabled:opacity-60;
 	}
+
+	
 }

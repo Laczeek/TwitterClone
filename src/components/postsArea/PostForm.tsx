@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { PhotoIcon, FaceSmileIcon, CalendarIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import PickerModal from './PickerModal';
+import LoadingButton from '../ui/LoadingButton';
 
 interface PostFormPropsType {
 	onSubmit: (event: React.FormEvent<HTMLFormElement>, message: string, file: string | null) => void;
@@ -17,10 +18,6 @@ const PostForm = ({ onSubmit, userPhoto, buttonText, placeholderText }: PostForm
 	const photoRef = useRef<HTMLInputElement>(null);
 	const emojiButtonRef = useRef<HTMLButtonElement>(null);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-	useEffect(() => {
-		textareaRef.current?.focus();
-	}, []);
 
 	const addImgToForm = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files && event.target.files[0]) {
@@ -97,9 +94,13 @@ const PostForm = ({ onSubmit, userPhoto, buttonText, placeholderText }: PostForm
 							<CalendarIcon className='h-6 w-6 text-blue mx-2 hover:opacity-80 transition-opacity duration-200 pointer-events-none' />
 						</button>
 					</div>
-					<button className='btn' disabled={Boolean(!message.length)} type='submit'>
-						{buttonText}
-					</button>
+
+					<LoadingButton
+						text={buttonText}
+						loadingText='Tweeting'
+						onClick={undefined}
+						isDisabled={Boolean(message.trim().length)}
+					/>
 				</div>
 			</div>
 		</form>
