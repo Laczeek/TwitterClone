@@ -9,7 +9,7 @@ interface PropsType  {
 class ErrorBoundary extends Component<PropsType> {
 	state = { hasError: false };
 
-	static getDerivedStateFromError(error: any) {
+	static getDerivedStateFromError() {
 		return { hasError: true };
 	}
 
